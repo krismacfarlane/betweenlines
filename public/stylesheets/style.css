@@ -1,0 +1,39 @@
+header {
+  border-style: dashed;
+  border-width: 5px;
+  border-color: olive;
+  background-color: lavenderblush;
+  padding: 10px 20px;
+}
+
+button {
+  font-family: Arial,sans-serif;
+  font-size: 12px;
+  line-height: 20px;
+  margin-bottom: 0;
+  margin-top: 10px;
+  padding: 7px 10px;
+  width: 5%;
+  text-align: center;
+  float: right;
+  border-style: dashed;
+  border-width: 5px;
+  border-color: olive;
+}
+
+.logo {
+  float:left;
+  border-style: dashed;
+  border-width: 5px;
+  border-color: olive;
+}
+
+.name {
+  text-align: center;
+}
+
+.main {
+  border-style: dashed;
+  border-width: 5px;
+  border-color: olive;
+}
