@@ -17,7 +17,15 @@
 
   <div class="main">
     <h1> Your Bookshelf </h1>
-    <a href="/books/new">add a new book</a>
+    <a href="/new_book">add a new book</a>
+    <ul>
+        <% @bookshelf.each do |book| %>
+        <% @title = JSON.parse(book)[0] %>
+        <% @author = JSON.parse(book)[1] %>
+        <% @chapter = JSON.parse(book)[2] %>
+        <% @message = "#{@title} by #{@author}. Chapter: #{@chapter}" %>
+        <li><%= @message %></li>
+      <% end %>
   </div>
 </body>
 </html>

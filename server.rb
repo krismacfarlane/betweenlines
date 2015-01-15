@@ -6,6 +6,10 @@ module BetweenLines
     configure :development do
       register Sinatra::Reloader
       require 'pry'
+      $bookshelf = Redis.new({
+        :host => "127.0.0.1",
+        :port => 6379
+      })
     end
 
     get('/') do
@@ -14,6 +18,7 @@ module BetweenLines
 
     get('/bookshelf') do
       # once OAuth is working, this is where it goes
+      @bookshelf = $bookshelf.lrange("books", 0, -1)
       render(:erb, :index)
     end
 
@@ -25,32 +30,42 @@ module BetweenLines
       redirect to("/")
     end
 
-    get('/books/new') do
+    get('/new_book') do
       render(:erb, :newbook, {:layout => :default})
     end
 
-    get('books/:title') do
-      title = params[:title]
-      # this would show the topics for the title
-      render(:erb, :showtopics, {:layout => :default})
+    post('/bookshelf') do
+      title = params["title"]
+      author = params["author"]
+      chapter = params["chapter"]
+      book = []
+      book.push(title, author, chapter)
+      $bookshelf.rpush("books", book.to_json)
+      redirect to("/bookshelf")
     end
 
-    get('/books/:title/new') do
-      title = params[:title]
-      render(:erb, :newtopic, {:layout => :default})
-    end
+    # get('/:title/topic') do
+    #   title = params[:title]
+    #   # this would show the topics for the title
+    #   render(:erb, :showtopics, {:layout => :default})
+    # end
 
-    get('/books/:title/:topic') do
-      title = params[:title]
-      topic = params[:topic]
-      render(:erb, :showmessages, {:layout => :default})
-    end
+    # get('/books/:title/new') do
+    #   title = params[:title]
+    #   render(:erb, :newtopic, {:layout => :default})
+    # end
 
-    get('/books/:title/:topic/new') do
-      title = params[:title]
-      topic = params[:topic]
-      render(:erb, :newmessage, {:layout => :default})
-    end
+    # get('/books/:title/:topic') do
+    #   title = params[:title]
+    #   topic = params[:topic]
+    #   render(:erb, :showmessages, {:layout => :default})
+    # end
+
+    # get('/books/:title/:topic/new') do
+    #   title = params[:title]
+    #   topic = params[:topic]
+    #   render(:erb, :newmessage, {:layout => :default})
+    # end
 
   end
 end
