@@ -7,7 +7,7 @@ header {
 }
 
 button {
-  font-family: Arial,sans-serif;
+/*  font-family: Arial,sans-serif;
   font-size: 12px;
   line-height: 20px;
   margin-bottom: 0;
@@ -18,7 +18,7 @@ button {
   float: right;
   border-style: dashed;
   border-width: 5px;
-  border-color: olive;
+  border-color: olive;*/
 }
 
 .logo {

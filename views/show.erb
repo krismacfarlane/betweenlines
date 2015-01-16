@@ -20,15 +20,12 @@
     <a href="/new_book">add a new book</a>
     <ul>
       <% @books.each do |book| %>
-      <li><a href="/books/<%= book["title"] %>">
-      <%=book["title"] %>
+      <li><a href="/books/<%= book["title"] %>/topics">
+      <%= book["title"] %> by <%= book["author"] %>
       </a></li>
       <% end %>
     </ul>
   </div>
 </body>
 </html>
-
-
-<!-- this is what I had originally, if I decide to keep it as a list -->
 

@@ -26,7 +26,7 @@ book = {
 $redis.rpush('books', book.to_json)
 
 book = { title: 'Harry Potter',
-         author: 'Dave Eggers',
+         author: 'J.K. Rowling',
          chapters: 2,
          topics: [
            {

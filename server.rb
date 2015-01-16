@@ -16,29 +16,11 @@ module BetweenLines
       render(:erb, :index)
     end
 
-    # get('/login') do
-    #   session[:name] = params[:name].downcase
-    #   redirect to(params[:name].downcase)
-    # end
-
-    # get('/:username') do
-    #   # once OAuth is working, this is where it goes
-    #   if session[:name].downcase != params[:username].downcase
-    #     redirect to('/')
-    #   end
-    #   @name = params[:username].downcase
-    #   redirect to('/bookshelf')
-    # end
-
     get('/bookshelf') do
       @bookshelf = $bookshelf.lrange("books", 0, -1)
       @books = @bookshelf.map { |str| JSON.parse(str)}
       render(:erb, :show)
     end
-
-    # get('/oauth_callback') do
-
-    # end
 
     get('/logout') do
       redirect to('/')
