@@ -8,24 +8,24 @@
 </head>
 <body>
 
-  <header>
-    <button class="button"><a href="/logout">logout</a></button>
-    <img class="logo" src="http://reminder.opto.ca/_images/cards/cat_reading_small.jpg" alt="">
-    <h1 class="name">between the lines</h1>
-    <h2 class="welcome">hello, [name].</h2>
-  </header>
+    <header>
+      <img class="logo" src="http://reminder.opto.ca/_images/cards/cat_reading_small.jpg" alt="">
+      <h1 class="name">between the lines</h1>
+      <h2 class="welcome">welcome</h2>
+    </header>
 
-  <div class="main">
-    <h1> Your Bookshelf </h1>
-    <a href="/new_book">add a new book</a>
-    <ul>
-        <% @bookshelf.each do |book| %>
-        <% @title = JSON.parse(book)[0] %>
-        <% @author = JSON.parse(book)[1] %>
-        <% @chapter = JSON.parse(book)[2] %>
-        <% @message = "#{@title} by #{@author}. Chapter: #{@chapter}" %>
-        <li><%= @message %></li>
-      <% end %>
-  </div>
+    <div class="main">
+      <a href="/signup">Sign up!</a>
+      <form method="GET" action="/login">
+        <label>username<br/>
+          <input type="text" name="name"/>
+        </label>
+        <label>password<br/>
+          <input type="password" name="password"/>
+        </label>
+        <input type="submit"/>
+      </form>
+    </div>
+
 </body>
 </html>

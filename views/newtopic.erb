@@ -1,0 +1,21 @@
+<p> New topic for <%= @title %> <p>
+<form method="post" action="/:title/topic">
+  <label>Topic:
+    <input type="text" name="topic">
+  </label>
+
+  <label>Message:
+    <textarea name="message" cols="30" rows="10"></textarea>
+  </label>
+
+  <input type="submit" value="add topic">
+</form>
+
+
+<!--         <% @bookshelf.each do |book| %>
+        <% @title = JSON.parse(book)[0] %>
+        <% @author = JSON.parse(book)[1] %>
+        <% @chapter = JSON.parse(book)[2] %>
+        <% @message = "#{@title} by #{@author}. Chapter: #{@chapter}" %>
+        <li><% @message %></li>
+      <% end %>
