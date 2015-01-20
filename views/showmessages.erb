@@ -1,7 +1,0 @@
-<h1> <%= @topic_name %> </h1>
-  <a href="/:title/topic/new">add a new message</a>
-  <ul>
-    <% @bookshelf.each do |id| %>
-    <li><%= $bookshelf.hget("book#{id}", "message") %></li>
-    <% end %>
-  </ul>

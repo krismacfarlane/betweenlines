@@ -4,8 +4,8 @@ module BetweenLines
     enable :logging, :sessions
 
     configure :development do
-      register Sinatra::Reloader
       require 'pry'
+      register Sinatra::Reloader
       $bookshelf = Redis.new({
         :host => "127.0.0.1",
         :port => 6379
@@ -13,7 +13,25 @@ module BetweenLines
     end
 
     get('/') do
-      render(:erb, :index)
+      @oops = params["oops"]
+      render(:erb, :index, { :layout => :default })
+    end
+
+    get('/login') do
+      @name = params["name"].downcase
+      password = params["password"]
+      password_check = $bookshelf.hget(password, "password")
+      if password == password_check
+        session[:name] =  $bookshelf.hget(name, "name")
+        redirect('/bookshelf')
+      else
+        redirect('/?oops=true')
+      end
+    end
+
+    get('/logout') do
+      session.clear
+      redirect('/')
     end
 
     get('/bookshelf') do
@@ -22,80 +40,106 @@ module BetweenLines
       render(:erb, :show)
     end
 
-    get('/logout') do
-      redirect to('/')
-    end
-
     get('/new_book') do
       render(:erb, :newbook, {:layout => :default})
     end
 
     post('/bookshelf') do
-      id = $bookshelf.incr("book_id")
-      $bookshelf.hmset("book#{id}",
-      "title", params["title"],
-      "author", params["author"],
-      "chapter", params["chapter"])
-      $bookshelf.rpush("book_ids", id)
-      redirect to('/bookshelf')
+      @book_hash = {}
+      @book_hash["title"] = params["title"]
+      @book_hash["author"] = params["author"]
+      @book_hash["topics"] = []
+      $bookshelf.rpush('books', @book_hash.to_json)
+      redirect to ('/bookshelf')
     end
 
-    get('/books/:title/topics') do
-      title = params["title"]
-      @books = $bookshelf.lrange("books", 0, -1).map { |str| JSON.parse(str)}
-      binding.pry
-      @book = @books.find do |book|
-        book['title'] == title
+    get('/users/new') do
+      @name = params["name"]
+      render(:erb, :newuser, { :layout => :default})
+    end
+
+    post('/users/new') do
+      @name = params["name"].downcase
+      password = params["password"]
+
+      if $bookshelf.hgetall(@name.downcase) == {}
+        $bookshelf.hmset(@name, "name", @name, "password", password)
+        redirect('/bookshelf')
+      else
+        redirect('/bookshelf')
       end
-      "#{@book['author']}"
     end
-# this is what I had originally, when it was a list.
-    #   title = params["title"]
-    #   author = params["author"]
-    #   chapter = params["chapter"]
-    #   book = []
-    #   book.push(title, author, chapter)
-    #   $bookshelf.rpush("books", book.to_json)
-    #   redirect to("/bookshelf")
 
-    # get('/:title/topic') do
-    #   @title = params[:title]
-    #   @bookshelf = $bookshelf.lrange("books_ids", 0, -1)
-    #   # this would show the topics for the title
-    #   render(:erb, :showtopics, {:layout => :default})
-    # end
+    get('/books/:title') do
+      @title = params["title"]
+      @books = $bookshelf.lrange("books", 0, -1).map { |str| JSON.parse(str)}
+      @book = @books.find do |book|
+        book['title'] == @title
+      end
+      render(:erb, :showtopics, {:layout => :default})
+    end
 
-    # post('/:title/topic') do
-    #   @title = params[:title]
-    #   $bookshelf.hmset("book#{id}",
-    #     "topic_name", params["topic"],
-    #     "message", params["message"])
-    #   redirect to('/:title/topic')
-    # end
+    post('/books/:title') do
+      @title = params["title"]
+      @books = $bookshelf.lrange("books", 0, -1).map { |str| JSON.parse(str)}
+      @book = @books.find do |book|
+        book['title'] == @title
+      end
 
-    # get('/:title/topic/new') do
-    #   title = params[:title]
-    #   render(:erb, :newtopic, {:layout => :default})
-    # end
+      topic = {}
+      topic["topic_title"] = params["topic_title"]
+      topic["messages"] = {}
+      topic["messages"]["author"] = params["name"]
+      topic["messages"]["body"] = params["message"]
+      topic
+      @book["topics"].push(topic)
 
-    # get('/:title/:topic/messages') do
-    #   title = params[:title]
-    #   topic = params[:topic]
-    #   render(:erb, :showmessages, {:layout => :default})
-    # end
+      $bookshelf.lpush("books", @book.to_json)
+      redirect to ("/books/#{@title}")
+    end
 
-    # get('/:title/:topic/messages/new') do
-    #   title = params[:title]
-    #   topic = params[:topic]
-    #   render(:erb, :newmessage, {:layout => :default})
-    # end
+    get('/:title/new') do
+      @title = params["title"]
+      @books = $bookshelf.lrange("books", 0, -1).map { |str| JSON.parse(str)}
+      @book = @books.find do |book|
+        book['title'] == @title
+      end
+      render(:erb, :newtopic, {:layout => :default})
+    end
 
-    # post('/:title/:topic/messages') do
-    #   @title = params[:title]
-    #   $bookshelf.hmset("book#{id}",
-    #     "message", params["message"])
-    #   redirect to('/:title/:topic/messages')
-    # end
+    get ('/:title/:topic') do
+      @title = params["title"]
+      @books = $bookshelf.lrange("books", 0, -1).map { |str| JSON.parse(str)}
+      @book = @books.find do |book|
+        book['title'] == @title
+      end
+      @topic_title = params[:topic]
+      render(:erb, :showtopic, {:layout => :default})
+    end
+
+    get ('/:title/:topic/new') do
+      @title = params["title"]
+      @topic = params["topic"]
+      @books = $bookshelf.lrange("books", 0, -1).map { |str| JSON.parse(str)}
+      @book = @books.find do |book|
+        book['title'] == @title
+      end
+      render(:erb, :newmessage, {:layout => :default})
+    end
+
+    post ('/:title/:topic/newmessage') do
+      @title = params["title"]
+      @topic = params["topic"]
+      @books = $bookshelf.lrange("books", 0, -1).map { |str| JSON.parse(str)}
+      @book = @books.find do |book|
+        book['title'] == @title
+      end
+
+      @book["topics"]["messages"]["author"] = params["name"]
+      @book["topics"]["messages"]["body"] = params["message"]
+      $bookshelf.lpush("books", @book.to_json)
+      redirect to ("/#{@title}/#{@topic}")
+    end
 
   end
 end

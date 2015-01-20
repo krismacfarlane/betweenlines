@@ -1,8 +1,20 @@
-<p> New message for <%= @topic %> <p>
-<form method="post" action="/:title/:topic/messages">
-  <label>Message
-    <textarea name="message" cols="30" rows="10"></textarea>
+<h1><%= @title %> </h1>
+<h2><%= @topic %></h2>
+
+<form method="post" action="/<%= @title %>/<%= @topic %>/newmessage">
+
+  <label>What do you have to say about this topic?
+    <textarea rows="4" cols="20" name="message">
+    </textarea>
   </label>
 
-  <input type="submit" value="add message">
+  <label>What is your name?
+    <input type="text" name="name">
+  </label>
+
+  <input type="hidden" name="like" value="0">
+  <input type="hidden" name="dislike" value="0">
+
+  <input type="submit" value="Continue the convo">
+
 </form>

@@ -1,0 +1,15 @@
+<form method="post" action="/users/new">
+  <% if @name == "true" %>
+    <p>Choose a different name.</p>
+  <% end %>
+  <label>What is your name?
+    <input type="text" name="name" required>
+  </label>
+
+  <label>Choose a password.
+    <input type="password" name="password" required>
+  </label>
+
+  <input type="submit" value="Make your account">
+
+</form>

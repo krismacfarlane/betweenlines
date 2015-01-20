@@ -12,16 +12,16 @@
     <button class="button"><a href="/logout">logout</a></button>
     <img class="logo" src="http://reminder.opto.ca/_images/cards/cat_reading_small.jpg" alt="">
     <h1 class="name">between the lines</h1>
-    <h2 class="welcome">hello, <%= @name %>.</h2>
+    <h2 class="welcome">hello!</h2>
   </header>
 
   <div class="main">
-    <h1> Your Bookshelf </h1>
+    <h1> The Bookshelf </h1>
     <a href="/new_book">add a new book</a>
     <ul>
       <% @books.each do |book| %>
-      <li><a href="/books/<%= book["title"] %>/topics">
-      <%= book["title"] %> by <%= book["author"] %>
+      <li><a href="/books/<%= book['title'] %>">
+      <%= book['title'] %> by <%= book['author'] %>
       </a></li>
       <% end %>
     </ul>

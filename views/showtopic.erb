@@ -1,0 +1,10 @@
+<h1> <%= @title %> </h1>
+<h2> <%= @topic_title %>
+  <ul>
+      <% @book["topics"].each do |topic| %>
+      <li>
+      <%= topic["messages"]["author"] %>: <%= topic["messages"]["body"] %>
+      </li>
+      <% end %>
+  </ul>
+  <a href="/<%= @book['title'] %>/<%= @topic_title %>/new">add a new message</a>

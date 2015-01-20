@@ -1,7 +1,14 @@
 <h1> <%= @title %> </h1>
-  <a href="/:title/:topic/messages/new">add a new message</a>
+  <a href="/<%= @book['title'] %>/new">add a new topic</a>
   <ul>
-    <% @bookshelf.each do |id| %>
-    <li><%= $bookshelf.hget("book#{id}", "topic_name") %></li>
-    <% end %>
+  <% if @book["topics"] == [] %>
+    <%= "There are no topics yet!" %>
+  <% else %>
+      <% @book["topics"].each do |topic| %>
+      <li><a href="/<%= @book['title'] %>/<%= topic["topic_title"] %>">
+      "<%= topic["topic_title"] %>" started by <%= topic["messages"]["author"] %>
+      </a></li>
+      <% end %>
+  <% end %>
   </ul>
+
