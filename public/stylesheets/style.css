@@ -1,39 +1,54 @@
 header {
-  border-style: dashed;
-  border-width: 5px;
   border-color: olive;
   background-color: lavenderblush;
   padding: 10px 20px;
+  font-family: 'Handlee', cursive;
 }
 
 button {
-/*  font-family: Arial,sans-serif;
-  font-size: 12px;
-  line-height: 20px;
-  margin-bottom: 0;
-  margin-top: 10px;
-  padding: 7px 10px;
-  width: 5%;
-  text-align: center;
+  font-family: 'Handlee', cursive;
   float: right;
   border-style: dashed;
-  border-width: 5px;
-  border-color: olive;*/
+  border-width: 2px;
+  border-color: olive;
+}
+
+html {
+  border-style: dashed;
+  border-width: 4px;
+  border-color: olive;
+}
+
+body {
+  margin: auto 10px;
+  width: auto;
+  font-family: 'Vollkorn', serif;
+  background-color: honeydew;
 }
 
 .logo {
   float:left;
   border-style: dashed;
-  border-width: 5px;
+  border-width: 2px;
   border-color: olive;
 }
 
 .name {
   text-align: center;
+  font-size: 60px;
+}
+
+.welcome {
+  padding: 10px auto;
 }
 
 .main {
+  text-align: center;
   border-style: dashed;
-  border-width: 5px;
+  border-width: 4px;
   border-color: olive;
+}
+
+ul {
+  list-style-type: none;
 }

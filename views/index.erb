@@ -3,6 +3,7 @@
 <head>
   <meta charset='utf-8' />
   <title>Between the Lines</title>
+  <link href='http://fonts.googleapis.com/css?family=Vollkorn|Handlee' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" type="text/css" href="/stylesheets/normalize.css" />
   <link rel="stylesheet" type="text/css" href="/stylesheets/style.css" />
 </head>
@@ -11,10 +12,15 @@
     <header>
       <img class="logo" src="http://reminder.opto.ca/_images/cards/cat_reading_small.jpg" alt="">
       <h1 class="name">between the lines</h1>
-      <h2 class="welcome">welcome</h2>
+      <h2 class="welcome">Welcome</h2>
     </header>
 
-    <button class="bookshelf_button"><a href="/bookshelf">Check out the bookshelf</a></button>
+    <p> What is your name? <p>
+    <form method="post" action="/index">
+    <input type="text" name="name" required>
+    <input type="submit" value="Check out the bookshelf">
+    </form>
+
 
 </body>
 </html>

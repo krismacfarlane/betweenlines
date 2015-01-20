@@ -13,20 +13,13 @@ module BetweenLines
     end
 
     get('/') do
-      @oops = params["oops"]
-      render(:erb, :index, { :layout => :default })
+      render(:erb, :index)
     end
 
-    get('/login') do
-      @name = params["name"].downcase
-      password = params["password"]
-      password_check = $bookshelf.hget(password, "password")
-      if password == password_check
-        session[:name] =  $bookshelf.hget(name, "name")
-        redirect('/bookshelf')
-      else
-        redirect('/?oops=true')
-      end
+    post('/index') do
+      name = params[:name]
+      session[:name] = name
+      redirect to ('/bookshelf')
     end
 
     get('/logout') do
@@ -35,6 +28,7 @@ module BetweenLines
     end
 
     get('/bookshelf') do
+      $name = session[:name].capitalize
       @bookshelf = $bookshelf.lrange("books", 0, -1)
       @books = @bookshelf.map { |str| JSON.parse(str)}
       render(:erb, :show)
@@ -53,22 +47,6 @@ module BetweenLines
       redirect to ('/bookshelf')
     end
 
-    get('/users/new') do
-      @name = params["name"]
-      render(:erb, :newuser, { :layout => :default})
-    end
-
-    post('/users/new') do
-      @name = params["name"].downcase
-      password = params["password"]
-
-      if $bookshelf.hgetall(@name.downcase) == {}
-        $bookshelf.hmset(@name, "name", @name, "password", password)
-        redirect('/bookshelf')
-      else
-        redirect('/bookshelf')
-      end
-    end
 
     get('/books/:title') do
       @title = params["title"]
@@ -89,7 +67,7 @@ module BetweenLines
       topic = {}
       topic["topic_title"] = params["topic_title"]
       topic["messages"] = {}
-      topic["messages"]["author"] = params["name"]
+      topic["messages"]["author"] = $name
       topic["messages"]["body"] = params["message"]
       topic
       @book["topics"].push(topic)
@@ -135,7 +113,7 @@ module BetweenLines
         book['title'] == @title
       end
 
-      @book["topics"]["messages"]["author"] = params["name"]
+      @book["topics"]["messages"]["author"] = $name
       @book["topics"]["messages"]["body"] = params["message"]
       $bookshelf.lpush("books", @book.to_json)
       redirect to ("/#{@title}/#{@topic}")
