@@ -6,7 +6,8 @@ module BetweenLines
     configure :development do
       require 'pry'
       register Sinatra::Reloader
-      $bookshelf = Redis.new
+      uri = URI.parse(ENV["REDISTOGO_URL"])
+      $bookshelf = Redis.new(:host => uri.host, :port => uri.port, :password => uri.password)
     end
 
     get('/') do
