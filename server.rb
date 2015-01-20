@@ -27,6 +27,7 @@ module BetweenLines
       redirect('/')
     end
 
+# pulls out the hash inside of the redis list and sets it up for displaying on the 'bookshelf' page
     get('/bookshelf') do
       $name = session[:name].capitalize
       @bookshelf = $bookshelf.lrange("books", 0, -1)
@@ -38,6 +39,8 @@ module BetweenLines
       render(:erb, :newbook, {:layout => :default})
     end
 
+# creates a new book hash, including an empty array for later use, when adding messages.
+# pushes the book hash to the redis list 'books'
     post('/bookshelf') do
       @book_hash = {}
       @book_hash["title"] = params["title"]
@@ -47,7 +50,7 @@ module BetweenLines
       redirect to ('/bookshelf')
     end
 
-
+# this will show the list of topics for the book
     get('/books/:title') do
       @title = params["title"]
       @books = $bookshelf.lrange("books", 0, -1).map { |str| JSON.parse(str)}
@@ -57,6 +60,8 @@ module BetweenLines
       render(:erb, :showtopics, {:layout => :default})
     end
 
+# realizing that the first three lines of this is very repetitive
+# creates the new topic and adding the initial message (body) and author (session name)
     post('/books/:title') do
       @title = params["title"]
       @books = $bookshelf.lrange("books", 0, -1).map { |str| JSON.parse(str)}
@@ -72,6 +77,8 @@ module BetweenLines
       topic
       @book["topics"].push(topic)
 
+# pushes this new information to the redis list 'books'
+# this is an error! it doesn't overwrite what was there, it adds a whole new hash.
       $bookshelf.lpush("books", @book.to_json)
       redirect to ("/books/#{@title}")
     end
