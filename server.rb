@@ -10,7 +10,7 @@ module BetweenLines
     end
 
     configure :production do
-      $redis = Redis.new({url: ENV['REDISTOGO_URL']})
+      $bookshelf = Redis.new({url: ENV['REDISTOGO_URL']})
     end
 
     get('/') do
