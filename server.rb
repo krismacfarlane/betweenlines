@@ -17,8 +17,7 @@ module BetweenLines
     end
 
     post('/index') do
-      name = params[:name]
-      session[:name] = name
+      session[:name] = params[:name].capitalize
       redirect to ('/bookshelf')
     end
 
@@ -27,11 +26,10 @@ module BetweenLines
       redirect('/')
     end
 
-# pulls out the hash inside of the redis list and sets it up for displaying on the 'bookshelf' page
+    # pulls out the hash inside of the redis list and sets it up for displaying on the 'bookshelf' page
     get('/bookshelf') do
-      $name = session[:name].capitalize
       @bookshelf = $bookshelf.lrange("books", 0, -1)
-      @books = @bookshelf.map { |str| JSON.parse(str)}
+      @books = @bookshelf.map { |str| JSON.parse(str) }
       render(:erb, :show)
     end
 
@@ -39,46 +37,46 @@ module BetweenLines
       render(:erb, :newbook, {:layout => :default})
     end
 
-# creates a new book hash, including an empty array for later use, when adding messages.
-# pushes the book hash to the redis list 'books'
+    # creates a new book hash, including an empty array for later use, when adding messages.
+    # pushes the book hash to the redis list 'books'
     post('/bookshelf') do
       @book_hash = {}
       @book_hash["title"] = params["title"]
       @book_hash["author"] = params["author"]
       @book_hash["topics"] = []
-      $bookshelf.rpush('books', @book_hash.to_json)
+      $bookshelf.rpush("books", @book_hash.to_json)
       redirect to ('/bookshelf')
     end
 
-# this will show the list of topics for the book
+    # this will show the list of topics for the book
     get('/books/:title') do
       @title = params["title"]
-      @books = $bookshelf.lrange("books", 0, -1).map { |str| JSON.parse(str)}
+      @books = $bookshelf.lrange("books", 0, -1).map { |str| JSON.parse(str) }
       @book = @books.find do |book|
-        book['title'] == @title
+        book["title"] == @title
       end
       render(:erb, :showtopics, {:layout => :default})
     end
 
-# realizing that the first three lines of this is very repetitive
-# creates the new topic and adding the initial message (body) and author (session name)
+    # realizing that the first three lines of this is very repetitive
+    # creates the new topic and adding the initial message (body) and author (session name)
     post('/books/:title') do
       @title = params["title"]
-      @books = $bookshelf.lrange("books", 0, -1).map { |str| JSON.parse(str)}
+      @books = $bookshelf.lrange("books", 0, -1).map { |str| JSON.parse(str) }
       @book = @books.find do |book|
-        book['title'] == @title
+        book["title"] == @title
       end
 
       topic = {}
       topic["topic_title"] = params["topic_title"]
       topic["messages"] = {}
-      topic["messages"]["author"] = $name
+      topic["messages"]["author"] = session[:name]
       topic["messages"]["body"] = params["message"]
       topic
       @book["topics"].push(topic)
 
-# pushes this new information to the redis list 'books'
-# this is an error! it doesn't overwrite what was there, it adds a whole new hash.
+      # pushes this new information to the redis list 'books'
+      # this is an error! it doesn't overwrite what was there, it adds a whole new hash.
       $bookshelf.lpush("books", @book.to_json)
       redirect to ("/books/#{@title}")
     end
