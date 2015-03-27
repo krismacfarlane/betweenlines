@@ -4,6 +4,10 @@
 
 - Creating an forum for an online book club.
 
+### technologies used:
+- Redis
+- Sinatra 
+
 ### User stories for project sprint:
 - **As a user**:
 - you can log in with a username
